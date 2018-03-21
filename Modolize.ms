@@ -71,7 +71,7 @@ struct ModuloFile (
 	fn file_in = (
 		local ret = this.validate()
 		if ret then (
-			break("ModuloFile file_in")
+			--break("ModuloFile file_in")
 			filein this.base
 		)
 		ret
@@ -126,7 +126,7 @@ struct Modulo (
 		ret
 	),
 
-	fn file_in modstr modulo_object:undefined = (
+	fn file_in modstr modulo_object:undefined index:1 = (
 		if modulo_object == undefined then (modulo_object = this) -- Do we search the submodule from a modulo object and not from this ?
 		local tokens = filterString modstr "."
 
@@ -146,19 +146,13 @@ struct Modulo (
 
 				-- Make new sub str
 				local new_modstr = ""
-				for i = 2 to tokens.count do (
+				for i = index to tokens.count do (
 					new_modstr = new_modstr + tokens[i]
 					if i < tokens.count do (
 						new_modstr = new_modstr + "."
 					)
 				)
-
-				if new_modstr != "" then (
-					print new_modstr
-					print basemodulo
-					--break()
-					modulo_object.file_in new_modstr modulo_object:basemodulo
-				)
+				if new_modstr != "" then (modulo_object.file_in new_modstr modulo_object:basemodulo index:(index+1))
 			)
 		)
 	),

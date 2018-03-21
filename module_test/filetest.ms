@@ -1,2 +1,2 @@
 x = "Hello"
-format "Oh fuck %\n" x
+format "1st lvl: %\n" x
