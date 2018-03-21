@@ -47,6 +47,8 @@ struct Modolize (
 --x = Modolize()
 --x.relative_file_in "test.ms"
 
+
+
 struct ModuloFile (
 	base = undefined,
 	dir  = undefined,
@@ -69,16 +71,13 @@ struct ModuloFile (
 	fn file_in = (
 		local ret = this.validate()
 		if ret then (
+			break("ModuloFile file_in")
 			filein this.base
 		)
 		ret
 	),
 	on create do ()
 )
-
-
-
-
 
 struct Modulo (
 	name       = undefined,
@@ -93,9 +92,13 @@ struct Modulo (
 
 		local dirs = getDirectories (fs_dir + @"*")
 		for d in dirs do (
-			local mo = Modulo()
-			mo.init d
-			append this.subs (mo)
+			local dfiles = getFiles (d + @"*.ms")
+			if dfiles.count > 0 then (
+				local mo = Modulo()
+				mo.init d
+				append this.subs (mo)
+				--break()
+			)
 		)
 
 		local fs_files = getFiles (fs_dir + @"*.ms")
@@ -103,7 +106,9 @@ struct Modulo (
 			local mf = ModuloFile()
 			mf.init f
 			append this.files (mf)
+			--break()
 		)
+		
 	),
 
 
@@ -122,12 +127,12 @@ struct Modulo (
 	),
 
 	fn file_in modstr modulo_object:undefined = (
-		if modulo_object == undefined then (modulo_object = this) -- We search from a modulo object not this
+		if modulo_object == undefined then (modulo_object = this) -- Do we search the submodule from a modulo object and not from this ?
 		local tokens = filterString modstr "."
 
 		-- We need to filein a file from fs_dir
 		if tokens.count == 1 then (
-			local mfile = this.get_file tokens[1]
+			local mfile = modulo_object.get_file tokens[1]
 			if mfile != false then (
 				mfile.file_in()
 			)
@@ -151,6 +156,7 @@ struct Modulo (
 				if new_modstr != "" then (
 					print new_modstr
 					print basemodulo
+					--break()
 					modulo_object.file_in new_modstr modulo_object:basemodulo
 				)
 			)
@@ -165,5 +171,6 @@ struct Modulo (
 
 m = Modulo()
 m.init (@"C:\Work\code\3ds\maxscript\Modolize\")
-x = m.file_in "module_test.filetest"
---x = m.file_in "test"
+m.file_in "module_test.filetest"
+m.file_in "module_test.anotherModule.hello"
+--m.file_in "test"
