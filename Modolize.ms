@@ -163,8 +163,59 @@ struct Modulo (
 	)
 )
 
-m = Modulo()
-m.init (@"C:\Work\code\3ds\maxscript\Modolize\")
-m.file_in "module_test.filetest"
-m.file_in "module_test.anotherModule.hello"
+--m = Modulo()
+--m.init (@"C:\Work\code\3ds\maxscript\Modolize\")
+--m.file_in "module_test.filetest"
+--m.file_in "module_test.anotherModule.hello"
 --m.file_in "test"
+
+struct ModuleTreeNode (root_node, name)
+
+
+
+fn makeModulesTreeFromString str tree:#() = (
+	local ret = ModolizeRet ret:((classof str) == String) reason:"Was not given a string! (makeModulesTreeFromString())"
+	if ret.ret then (
+		ret.reason = ""
+
+		-- Tokenize by dots
+		local tokens = filterString str "."
+		if tokens.count > 1 then (           -- We need to process submodules!
+
+			-- first Module 
+			local rNode = undefined
+			if (classof(tree) == Array and (tree.count > 0)) then (rNode = tree[tree.count])
+			append tree (ModuleTreeNode name:(tokens[1]) root_node:rNode)
+
+			-- Rebuild the str without the first module to recurse over it
+			local newStr = ""
+			for i=2 to tokens.count do (
+				
+				newStr = newStr + tokens[i]
+				if i<tokens.count then (newStr = newStr + ".")
+			)
+
+			--format "newStr: %\n" newStr
+
+			-- Recurse the new str
+			makeModulesTreeFromString newStr tree:tree
+		)
+		-- We are at the end
+		if tokens.count == 1 do (
+			local rNode = if (classof(tree) == Array and (tree.count > 0)) then (rNode = tree[tree.count]) else (undefined)
+			append tree (ModuleTreeNode name:(tokens[1]) root_node:rNode)
+		)
+	)
+	ret
+)
+
+
+str  = "module_test.anotherModule.hello"
+tree = #()
+
+makeModulesTreeFromString str tree:tree
+tree = tree[tree.count]
+print(tree)
+
+
+0
