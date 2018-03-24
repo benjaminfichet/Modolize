@@ -211,11 +211,72 @@ fn makeModulesTreeFromString str tree:#() = (
 
 
 str  = "module_test.anotherModule.hello"
-tree = #()
-
-makeModulesTreeFromString str tree:tree
-tree = tree[tree.count]
-print(tree)
+--tree = #()
+--
+--makeModulesTreeFromString str tree:tree
+--tree = tree[tree.count]
+--print(tree)
 
 
 0
+
+
+
+struct ModuleNode (
+	name, root_node, index
+)
+
+
+
+
+
+md = ModuleTreeDef()
+md.initFromString "module_test.another_module.hellofile"
+moduldef_array = md.getArray()
+strdef_array   = md.getString()
+
+
+-- Build up non chained modules array
+non_chained_modules = #()
+
+for i=1 to (moduldef_array.count) do (
+	local mstr  = moduldef_array[i]
+	local mnode = (ModuleNode name:m index:i)
+	
+	append non_chained_modules mnode
+)
+
+-- basic sanity check, should always pass!
+-- (moduldef_array.count) (non_chained_modules.count) should be equal
+assert_equal (moduldef_array.count) (non_chained_modules.count)
+
+
+-- Chains modules in order
+modules_tree = undefined
+for i=2 to non_chained_modules.count do (
+	-- Find 
+	local str_name  = moduldef_array[i]
+	local ncm       = non_chained_modules[i]
+	local last_node = non_chained_modules[i-1]
+
+	non_chained_modules[i].root_node = last_node
+)
+
+
+
+
+
+
+
+/*
+for i=exploded_string.count to 1 by -1 do (
+	local last_ = exploded_string[i]
+
+	local rNode = try(exploded_string[i-1])catch(undefined)
+	local mn = ModuleNode name:last_ root_node:rNode
+)*/
+
+
+
+
+--format "ModuleA.ModuleB.FileC str to array: %\n" (md.getArray())
