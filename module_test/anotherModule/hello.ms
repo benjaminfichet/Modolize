@@ -1,2 +1,2 @@
 --hello.ms
-print "Ok, working from sub.sub.modules! Nice algorithm Ben!"
+print "Ok, working from sub.sub.modules! Nice!"
