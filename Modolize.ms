@@ -49,13 +49,10 @@ struct Modolize (
 	private
 	basepath = undefined,
 
-	_dotnet_system_io_dir  = "System.IO.Directory",
-	_dotnet_system_io_file = "System.IO.File",
-
-	fn _directory_exists d = ((dotnetclass _dotnet_system_io_dir).Exists (d as string)),
-	fn _file_exists      f = ((dotnetclass _dotnet_system_io_file).Exists (f as string)),
+	fn _directory_exists d = ((dotnetclass "System.IO.Directory").Exists (d as string)),
+	fn _file_exists      f = ((dotnetclass "System.IO.File").Exists (f as string)),
 	fn _filein mod_str     = (
-		local ret     = ReturnCode ret:false
+		
 
 		-- Init the treedef mod
 		local tDef = ModuleTreeDef()
@@ -66,13 +63,13 @@ struct Modolize (
 		
 		-- Tree def array
 		local tree_arr = tDef.getArray()
-		if tree_arr.count > 0 then (
+		local ret     = ReturnCode ret:(tree_arr.count > 0) reason:("Unable to parse str: "+mod_str)
+		if ret.ret then (
 
-			-- We need to take care of submodules path
+			-- We need to take care of submodules
 			if tree_arr.count > 1 then (
 				for i=1 to tree_arr.count-1 do (
 					tofilein_str = tofilein_str + @"\" +  tree_arr[i]
-
 					if i == tree_arr.count-1 then (tofilein_str = tofilein_str + @"\")
 				)
 			)
@@ -102,7 +99,7 @@ struct Modolize (
 					ret.ret = false
 					ret.reason = ("*** Remodo filein error, invalid file:  "+finalPath+" ****\n\n"+(getCurrentException())+"\n" )
 				)
-			)
+			)else(ret.reason = "Unable to make %finalPath%!")
 			ret
 		)
 	),
