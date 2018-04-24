@@ -53,7 +53,18 @@ struct ModoPathModel (
 
 
 struct Modolize (
+	public
 
+	/*
+		Modolize will be initialized with this a creation if this is not undefined
+		ie: 
+			m = Modolize init_path:@"My/Path" -- instead of : 
+			
+			m = Modolize()
+			m.init @"My/Path"
+	*/
+	init_path = undefined,
+						  
 	private
 	basepath = undefined,
 
@@ -123,7 +134,7 @@ struct Modolize (
 		ret
 	),
 	fn set_path     p    = (set_basePath p),
-	fn get_path     p    = (get_basePath()),
+	fn get_path          = (get_basePath()),
 
 	fn filein mod_str = (
 		local ret = validate_basePath()
@@ -132,7 +143,9 @@ struct Modolize (
 		)
 		ret
 	),
-	on create do ()
+	on create do (
+		if classof(this.init_path) == String then (this.init this.init_path)
+	)	
 ) 
 
 
@@ -145,3 +158,7 @@ struct Modolize (
 
 --modo.init @"C:\symbdrives\BSSTools_Drive\SpiritTools"
 --modo.filein "General_Tools.setup._functions.sym_functions"
+
+
+--modo = Modolize init_path:@"C:\Work\code\3ds\maxscript\Modolize"
+--modo.filein "test.hello"
