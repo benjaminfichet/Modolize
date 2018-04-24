@@ -1,4 +1,11 @@
-struct ModuleTreeDef (
+-- Modolize needs ReturnCode.ms to be sourced somehow!
+-- https://github.com/benjaminfichet/ReturnCode.git
+----------------------------------------------------------------------------------------------
+(
+	if classof(ReturnCode) != StructDef then throw ("Modolize needs ReturnCode.ms to be sourced somehow!\n\tSee: https://github.com/benjaminfichet/ReturnCode.git\n\n")
+)
+
+struct ModoPathModel (
 
 	private
 	_a = undefined,
@@ -44,6 +51,7 @@ struct ModuleTreeDef (
 	on create do ()
 )
 
+
 struct Modolize (
 
 	private
@@ -55,7 +63,7 @@ struct Modolize (
 		
 
 		-- Init the treedef mod
-		local tDef = ModuleTreeDef()
+		local tDef = ModoPathModel()
 		tDef.initFromArray (FilterString mod_str ".")
 
 		-- init final str
