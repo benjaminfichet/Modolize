@@ -1,4 +1,5 @@
--- Draft code for futures implementations
+-- Remodo will be complete rewrite... using better solutions
+-------------------------------------------------------------
 
 --poc.ms
 struct ModolizeRet (

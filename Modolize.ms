@@ -5,58 +5,27 @@
 	if classof(ReturnCode) != StructDef then throw ("Modolize needs ReturnCode.ms to be sourced somehow!\n\tSee: https://github.com/benjaminfichet/ReturnCode.git\n\n")
 )
 
-struct ModoPathModel (
-
-	private
-	_a = undefined,
-	_s = undefined,
-
-	public
-	fn getString = (
-		local ret = classof(this._a) == Array
-		if ret then (
-			local retStr = ""
-			for i=1 to this._a.count do (
-				retStr = retStr + this._a[i]
-				if i < this._a.count then (retStr = retStr + ".")
-			)
-			ret = retStr
-		)
-		ret
-	),
-	fn getArray  = (
-		local ret = classof(this._s) == String
-		if ret then (ret = filterString this._s ".")
-		ret
-	),
-	fn getPath = (
-		substituteString (getString()) "." @"\"
-	),
-	fn initFromArray a = (
-		local ret = classof(a) == Array
-		if ret then (
-			this._a = a
-			this._s = this.getString()
-		)
-		ret
-	),
-	fn initFromString s = (
-		local ret = classof(s) == String
-		if ret then (
-			this._s = s
-			this._a = this.getArray()
-		)
-		ret
-	),
-	on create do ()
-)
 
 
+/* 
+	Class: ModoPathModel
+		Represents a path in a .dot format. ie.: "C:\test\file" == "C:.test.file"
+		Used by Modolizw in inter. to filein paths
+		
+		md = ModoPathModel()
+		--> (ModoPathModel _a:undefined _s:undefined)
+	
+		md.initFromString @"C:.Users.benjaminf.Desktop.code"
+		md.getString() 
+		--> @"C:/Users/benjaminf/Desktop/code"
+
+	Return: ReturnCode
+*/
 struct Modolize (
 	public
 
 	/*
-		Modolize will be initialized with this a creation if this is not undefined
+		Modolize will be initialized with this at creation if this is undefined
 		ie: 
 			m = Modolize init_path:@"My/Path" -- instead of : 
 			

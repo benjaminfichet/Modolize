@@ -1,5 +1,5 @@
 # Modolize
-An attempt at providing a clean python like interface to filein maxscript files using pure Maxscript
+An attempt at providing a clean python like interface to filein maxscript files using pure Maxscript. Very draft implementation, a complete rewrite is on its way.. poc is in remodo.ms
 
 ```maxscript
 modo = Modolize()
